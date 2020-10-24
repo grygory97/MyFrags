@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements FirstFragment.OnButtonClickListener {
 
@@ -83,22 +84,31 @@ public class MainActivity extends FragmentActivity implements FirstFragment.OnBu
 
     @Override
     public void onButtonClickShuffle() {
-
+        Toast.makeText(getApplicationContext(), "Shuffle", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onButtonClickClockwise() {
-
+        Toast.makeText(getApplicationContext(), "Clockwise", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onButtonClickHide() {
-
+        Toast.makeText(getApplicationContext(), "Hide", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onButtonClickRestore() {
+        Toast.makeText(getApplicationContext(), "Restore", Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        super.onAttachFragment(fragment);
+
+        if (fragment instanceof FirstFragment) {
+            ((FirstFragment) fragment).setOnButtonClickListener(this);
+        }
     }
 }
 
