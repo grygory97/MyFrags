@@ -11,6 +11,11 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class MainActivity extends FragmentActivity implements FirstFragment.OnButtonClickListener {
 
     /*
@@ -84,17 +89,32 @@ public class MainActivity extends FragmentActivity implements FirstFragment.OnBu
 
     @Override
     public void onButtonClickShuffle() {
+
         Toast.makeText(getApplicationContext(), "Shuffle", Toast.LENGTH_SHORT).show();
+        List<Integer> list = new ArrayList<Integer>(Arrays.asList(frames[0], frames[1], frames[2], frames[3]));
+        Collections.shuffle(list);
+        for (int i = 0; i < 4; i++) frames[i] = list.get(i).intValue();
+
+        newFragments();
     }
 
     @Override
     public void onButtonClickClockwise() {
         Toast.makeText(getApplicationContext(), "Clockwise", Toast.LENGTH_SHORT).show();
+
+        int t = frames[0];
+        frames[0] = frames[1];
+        frames[1] = frames[2];
+        frames[2] = frames[3];
+        frames[3] = t;
+
+        newFragments();
     }
 
     @Override
     public void onButtonClickHide() {
 
+        Toast.makeText(getApplicationContext(), "Hide", Toast.LENGTH_SHORT).show();
         //Listę fragmentów aktualnie osadzonych w aplikacji uzyskujemy wywołując metodę getFragments menadżera fragmentów.
         //Fragment ukrywamy metodą hide.
         //Fragment pokazujemy metoda show.
@@ -119,6 +139,9 @@ public class MainActivity extends FragmentActivity implements FirstFragment.OnBu
 
     @Override
     public void onButtonClickRestore() {
+
+        Toast.makeText(getApplicationContext(), "Restore", Toast.LENGTH_SHORT).show();
+
         if (!hiden) return;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -142,6 +165,27 @@ public class MainActivity extends FragmentActivity implements FirstFragment.OnBu
         if (fragment instanceof FirstFragment) {
             ((FirstFragment) fragment).setOnButtonClickListener(this);
         }
+    }
+
+    private void newFragments() {
+
+    //Nie ma możliwości zmiany przypisania fragmentu do ramki. To co możemy zrobić, to utworzyć nowe fragmenty i zastąpić poprzednie.
+    //Fragmenty w ramkach podmienia się przy użyciu metody replace.
+
+
+        Fragment[] newFragments = new Fragment[]{new FirstFragment(), new SecondFragment(), new ThirdFragment(), new FourthFragment()};
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        for (int i = 0; i < 4; i++) {
+            transaction.replace(frames[i], newFragments[i]);
+            if (hiden && !(newFragments[i] instanceof FirstFragment))
+                transaction.hide(newFragments[i]);
+        }
+
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
 
