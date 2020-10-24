@@ -94,12 +94,45 @@ public class MainActivity extends FragmentActivity implements FirstFragment.OnBu
 
     @Override
     public void onButtonClickHide() {
-        Toast.makeText(getApplicationContext(), "Hide", Toast.LENGTH_SHORT).show();
+
+        //Listę fragmentów aktualnie osadzonych w aplikacji uzyskujemy wywołując metodę getFragments menadżera fragmentów.
+        //Fragment ukrywamy metodą hide.
+        //Fragment pokazujemy metoda show.
+
+        if (hiden) return;
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        for (Fragment f : fragmentManager.getFragments()) {
+
+            if (f instanceof FirstFragment) continue;
+
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.hide(f);
+
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+
+        hiden = true;
     }
 
     @Override
     public void onButtonClickRestore() {
-        Toast.makeText(getApplicationContext(), "Restore", Toast.LENGTH_SHORT).show();
+        if (!hiden) return;
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        for (Fragment f : fragmentManager.getFragments()) {
+            if (f instanceof FirstFragment) continue;
+            transaction.show(f);
+        }
+
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+        hiden = false;
     }
 
     @Override
